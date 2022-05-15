@@ -1,6 +1,12 @@
 from PIL import Image
 from math import sqrt
+from tqdm import tqdm
 import argparse
+
+
+def get_path() -> str:
+    img_path = input("Enter image file path: \n")
+    return img_path
 
 
 def get_pixel_cords_hex(path: str) -> list:
@@ -9,7 +15,7 @@ def get_pixel_cords_hex(path: str) -> list:
     width, height = img.size
     codes = []
     #
-    for y in range(height):
+    for y in tqdm(range(height)):
         for x in range(width):
             r, g, b = pixels[x, y]
             #
@@ -21,22 +27,27 @@ def get_pixel_cords_hex(path: str) -> list:
 
 def sqrt_data(codes: list) -> list:
     data_arr = []
-    for arr in range(len(codes)):
+    for arr in tqdm(range(len(codes))):
         sqrt_x = int(sqrt(int(codes[arr][0])))
         sqrt_y = int(sqrt(int(codes[arr][1])))
-        bin_join = '0x'.join(codes[arr][2])
+        bin_join = '0x' + codes[arr][2]
         data_arr.append([sqrt_x, sqrt_y, bin_join])
     return data_arr
 
 
 def order_data(codes: list) -> list:
-    sqrt_x = [bin(x[0]) for x in codes]
-    sqrt_y = [bin(y[1]) for y in codes]
-    bin_hex = [bin(b[2]) for b in codes]
+    sqrt_x = [bin(x[0]) for x in tqdm(codes)]
+    sqrt_y = [bin(y[1]) for y in tqdm(codes)]
+    bin_hex = [bin(int(b[2], base=16)) for b in tqdm(codes)]
     ordered = [sqrt_x, sqrt_y, bin_hex]
     return ordered
 
 
+def high_compressed_image():
+    data = sqrt_data(get_pixel_cords_hex(get_path()))
+    hci = order_data(data)
+    return hci
+
+
 if __name__ == "__main__":
-    data = sqrt_data(get_pixel_cords_hex("images/sample1.jpg"))
-    order_data(data)
+    high_compressed_image()
