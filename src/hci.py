@@ -14,7 +14,9 @@ def get_pixel_cords_hex(path: str) -> list:
     pixels = img.load()
     width, height = img.size
     codes = []
-    #
+
+    print("\n/// GETTING RGB CODE ///")
+
     for y in tqdm(range(height)):
         for x in range(width):
             r, g, b = pixels[x, y]
@@ -27,6 +29,7 @@ def get_pixel_cords_hex(path: str) -> list:
 
 def sqrt_data(codes: list) -> list:
     data_arr = []
+    print("\n/// CALCULATING SQUARE ROOT OF EACH NUMBER ///")
     for arr in tqdm(range(len(codes))):
         sqrt_x = int(sqrt(int(codes[arr][0])))
         sqrt_y = int(sqrt(int(codes[arr][1])))
@@ -36,11 +39,17 @@ def sqrt_data(codes: list) -> list:
 
 
 def order_data(codes: list) -> list:
+    print("\n/// ORDERING DATA ///")
+    ordered_codes = []
+
     sqrt_x = [bin(x[0]) for x in tqdm(codes)]
     sqrt_y = [bin(y[1]) for y in tqdm(codes)]
     bin_hex = [bin(int(b[2], base=16)) for b in tqdm(codes)]
-    ordered = [sqrt_x, sqrt_y, bin_hex]
-    return ordered
+
+    for n in tqdm(range(len(codes))):
+        ordered_codes.append([sqrt_x[n], sqrt_y[n], bin_hex[n]])
+
+    return ordered_codes
 
 
 def high_compressed_image():
