@@ -52,11 +52,23 @@ def order_data(codes: list) -> list:
     return ordered_codes
 
 
-def high_compressed_image():
-    data = sqrt_data(get_pixel_cords_hex(get_path()))
+def high_compressed_image(path=None) -> list:
+    data = sqrt_data(get_pixel_cords_hex(path if path is not None else get_path()))
     hci = order_data(data)
     return hci
 
 
+def write_dot_hci(arr: list):
+
+    return 0
+
+
+def hci_func():
+    hci = high_compressed_image()
+    write_dot_hci(arr=hci)
+
+    return 0
+
+
 if __name__ == "__main__":
-    high_compressed_image()
+    hci_func()
