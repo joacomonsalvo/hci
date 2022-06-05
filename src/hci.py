@@ -1,6 +1,7 @@
 from PIL import Image
 from math import sqrt
 from tqdm import tqdm
+import re
 import argparse
 
 
@@ -38,13 +39,24 @@ def sqrt_data(codes: list) -> list:
     return data_arr
 
 
+def remove(pattern, list_name):
+    list_output = [re.sub(pattern, '', i) for i in list_name]
+    return list_output
+
+
 def order_data(codes: list) -> list:
     print("\n/// ORDERING DATA ///")
     ordered_codes = []
+    pattern = "b"
 
     sqrt_x = [bin(x[0]) for x in tqdm(codes)]
+    sqrt_x = remove(pattern, sqrt_x)
+
     sqrt_y = [bin(y[1]) for y in tqdm(codes)]
+    sqrt_y = remove(pattern, sqrt_y)
+
     bin_hex = [bin(int(b[2], base=16)) for b in tqdm(codes)]
+    bin_hex = remove(pattern, bin_hex)
 
     for n in tqdm(range(len(codes))):
         ordered_codes.append([sqrt_x[n], sqrt_y[n], bin_hex[n]])
@@ -59,9 +71,13 @@ def high_compressed_image(path=None) -> list:
 
 
 def write_dot_hci(arr: list):
-
+    compressed_file_name = input("Enter your hci file name: \n")
+    with open(f"{compressed_file_name}.hci", "w") as fl:
+        for list_items in arr:
+            for list_items2 in list_items:
+                fl.write(list_items2)
     return 0
-
+#  todo 8 bits 8 bits 32 bits
 
 def hci_func():
     hci = high_compressed_image()
