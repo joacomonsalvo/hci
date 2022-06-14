@@ -77,7 +77,35 @@ def write_dot_hci(arr: list):
             for list_items2 in list_items:
                 fl.write(list_items2)
     return 0
-#  todo 8 bits 8 bits 32 bits
+
+
+def length_tester(element: str, length: int) -> bool:
+    if len(element) > length:
+        raise IndexError("Out of range")
+
+    elif len(element) < length:
+        return False
+
+    elif len(element) == length:
+        return True
+
+
+def extend(s: str, amount_needed: int) -> str:
+    extended = "0" * amount_needed + s
+    return extended
+
+
+def length_fixer(to_fix: list, name: str):
+    if name == "x":
+        pass
+    elif name == "y":
+        pass
+    elif name == "code":
+        pass
+
+    else:
+        raise Exception("The str you introduced as name is not one of the three acceptable ones")
+
 
 def hci_func():
     hci = high_compressed_image()
