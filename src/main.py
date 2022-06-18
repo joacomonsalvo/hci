@@ -3,7 +3,7 @@ import d_hci
 
 
 def compress(path=None):
-    hci.high_compressed_image(path)
+    hci.hci(path)
 
 
 def decompress():

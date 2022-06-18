@@ -1,16 +1,28 @@
 from PIL import Image
 from math import sqrt
 from tqdm import tqdm
-import re
-import argparse
+import format
+import write
+
+
+'''GET IMAGE DATA'''
 
 
 def get_path() -> str:
+    """
+    Receives the image absolute path.
+    :return:
+    Returns image absolute path
+    """
     img_path = input("Enter image file path: \n")
     return img_path
 
 
 def get_pixel_cords_hex(path: str) -> list:
+    """
+    Returns the coordinates and the rgb code of the
+    image as a list
+    """
     img = Image.open(path)
     pixels = img.load()
     width, height = img.size
@@ -28,7 +40,14 @@ def get_pixel_cords_hex(path: str) -> list:
     return codes
 
 
+'''ALGORITHM FUNCTIONS'''
+
+
 def sqrt_data(codes: list) -> list:
+    """
+    Returns the square value each value of the list that
+    includes coordinates and rgb code
+    """
     data_arr = []
     print("\n/// CALCULATING SQUARE ROOT OF EACH NUMBER ///")
     for arr in tqdm(range(len(codes))):
@@ -39,24 +58,27 @@ def sqrt_data(codes: list) -> list:
     return data_arr
 
 
-def remove(pattern, list_name):
-    list_output = [re.sub(pattern, '', i) for i in list_name]
-    return list_output
-
-
 def order_data(codes: list) -> list:
+    """
+    Orders the data in the main list by
+    removing the extra digits and turn every
+    element into their binary form.
+    """
     print("\n/// ORDERING DATA ///")
     ordered_codes = []
-    pattern = "b"
+    pattern = "0b"
 
     sqrt_x = [bin(x[0]) for x in tqdm(codes)]
-    sqrt_x = remove(pattern, sqrt_x)
+    sqrt_x = format.remove(pattern, sqrt_x)
+    sqrt_x = verify(sqrt_x, 8)
 
     sqrt_y = [bin(y[1]) for y in tqdm(codes)]
-    sqrt_y = remove(pattern, sqrt_y)
+    sqrt_y = format.remove(pattern, sqrt_y)
+    sqrt_y = verify(sqrt_y, 8)
 
     bin_hex = [bin(int(b[2], base=16)) for b in tqdm(codes)]
-    bin_hex = remove(pattern, bin_hex)
+    bin_hex = format.remove(pattern, bin_hex)
+    bin_hex = verify(bin_hex, 32)
 
     for n in tqdm(range(len(codes))):
         ordered_codes.append([sqrt_x[n], sqrt_y[n], bin_hex[n]])
@@ -64,55 +86,34 @@ def order_data(codes: list) -> list:
     return ordered_codes
 
 
+def verify(list_io: list, length) -> list:
+    outcome = []
+
+    for elem in list_io:
+        format_list = format.length_tester(element=elem, length=length)
+        outcome.append(format_list)
+
+    return list_io
+
+
+'''MAIN'''
+
+
 def high_compressed_image(path=None) -> list:
+    """
+    Compress the image
+    """
     data = sqrt_data(get_pixel_cords_hex(path if path is not None else get_path()))
-    hci = order_data(data)
-    return hci
+    sub_hci = order_data(data)
+    return sub_hci
 
 
-def write_dot_hci(arr: list):
-    compressed_file_name = input("Enter your hci file name: \n")
-    with open(f"{compressed_file_name}.hci", "w") as fl:
-        for list_items in arr:
-            for list_items2 in list_items:
-                fl.write(list_items2)
-    return 0
-
-
-def length_tester(element: str, length: int) -> bool:
-    if len(element) > length:
-        raise IndexError("Out of range")
-
-    elif len(element) < length:
-        return False
-
-    elif len(element) == length:
-        return True
-
-
-def extend(s: str, amount_needed: int) -> str:
-    extended = "0" * amount_needed + s
-    return extended
-
-
-def length_fixer(to_fix: list, name: str):
-    if name == "x":
-        pass
-    elif name == "y":
-        pass
-    elif name == "code":
-        pass
-
-    else:
-        raise Exception("The str you introduced as name is not one of the three acceptable ones")
-
-
-def hci_func():
-    hci = high_compressed_image()
-    write_dot_hci(arr=hci)
+def hci(path):
+    hci_obj = high_compressed_image(path)
+    write.write_hci(arr=hci_obj)
 
     return 0
 
 
 if __name__ == "__main__":
-    hci_func()
+    hci(path=get_path())
